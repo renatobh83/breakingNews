@@ -21,7 +21,7 @@ const scrapeLogic = async (res) => {
     
     const page = await browser.newPage();
 
-    await page.goto(res.req.query.url,{waitUntil: "domcontentloaded"});
+    await page.goto("https://pptr.dev/guides/docker",{waitUntil: "domcontentloaded"});
 
     const fullTitle = await page.title()
     // Print the full title
