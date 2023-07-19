@@ -36,10 +36,13 @@ const scrapeLogic = async (res) => {
     // );
     // const fullTitle = await textSelector.evaluate((el) => el.textContent);
     const fullTitle = await page.title()
+    const image = await page.screenshot()
     // Print the full title
     const logStatement = `The title of this blog post is ${fullTitle}`;
-    console.log(logStatement);
-    res.send(logStatement);
+    console.log(logStatement)
+    res.setHeader('content-type', 'image/png');
+    
+    res.send(image);
   } catch (e) {
     console.error(e);
     res.send(`Something went wrong while running Puppeteer: ${e}`);
