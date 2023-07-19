@@ -21,10 +21,7 @@ const scrapeLogic = async (res) => {
     
     const page = await browser.newPage();
 
-    await page.goto(res.req.query.url);
-
-    // Set screen size
-    await page.setViewport({ width: 1080, height: 1024 });
+    await page.goto(res.req.query.url,{waitUntil: "domcontentloaded"});
 
     const fullTitle = await page.title()
     // Print the full title
