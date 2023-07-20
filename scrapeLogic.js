@@ -2,49 +2,51 @@ const puppeteer = require("puppeteer");
 require("dotenv").config();
 
 const scrapeLogic = async (res) => {
+  const url = res.req.query.url
+  if (!res.req.query.url) {
+    res.json({message: "endereco mal formatado: ?url=endereco"}).status(400).send()
+    return 
+  }
+
   const browser = await puppeteer.launch({
     args: [
       "--disable-setuid-sandbox",
       "--no-sandbox",
       "--single-process",
       "--no-zygote",
-    ],
+      ],
     executablePath:
-      process.env.NODE_ENV === "production"
-        ? process.env.PUPPETEER_EXECUTABLE_PATH
-        : puppeteer.executablePath(),
+    process.env.NODE_ENV === "production"
+    ? process.env.PUPPETEER_EXECUTABLE_PATH
+    : puppeteer.executablePath(),
   });
   try {
     const page = await browser.newPage();
-  console.log(res.req.query.url)
-    await page.goto(res.req.query.url);
+    await page.setRequestInterception(true);
 
-    // Set screen size
-    await page.setViewport({ width: 1080, height: 1024 });
+    page.on('request', (request) => {
 
-    // Type into search box
-    // await page.type(".search-box__input", "automate beyond recorder");
+      if(request.url().startsWith(url)) {
+        request.continue()
+      } else {
+        request.abort() 
+      }
+    }); 
 
-    // // Wait and click on first result
-    // const searchResultSelector = ".search-box__link";
-    // await page.waitForSelector(searchResultSelector);
-    // await page.click(searchResultSelector);
+    await page.goto(url);
 
-    // // Locate the full title with a unique string
-    // const textSelector = await page.waitForSelector(
-    //   "text/Customize and automate"
-    // );
-    // const fullTitle = await textSelector.evaluate((el) => el.textContent);
-    const fullTitle = await page.title()
-    const image = await page.screenshot()
-    // Print the full title
-    const logStatement = `The title of this blog post is ${fullTitle}`;
-    console.log(logStatement)
-    res.setHeader('content-type', 'image/png');
-    
-    res.send(image);
+    const newsValor = await page.evaluate( div =>{
+      
+      const nodeList = document.getElementsByClassName('headline')
+      const estadaoNews = [...nodeList]
+      const list = estadaoNews.map(({textContent}) => ({jornal: 'Estadao', noticia: textContent}))
+      return list  
+    })
+
+   
+    res.send(newsValor);
   } catch (e) {
-    console.error(e);
+
     res.send(`Something went wrong while running Puppeteer: ${e}`);
   } finally {
     await browser.close();
