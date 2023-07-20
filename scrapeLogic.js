@@ -1,14 +1,10 @@
 const puppeteer = require("puppeteer");
 require("dotenv").config();
 
-const withPage = (browser) => async (fn) => {  
-  const page = await browser.newPage();  
-  try {
-    return await fn(page);
-  } finally {
-  //  await page.close();
-  }
+const noticiasNumero = (news ,number= 8) => {
+  return  news.slice(0,number)
 }
+
 
 
 const scrapeLogic = async (res) => {
@@ -58,7 +54,7 @@ const scrapeLogic = async (res) => {
       const list = estadaoNews.map(({textContent}) => ({jornal: 'Estadao', noticia: textContent}))
       return list  
     })
-      noticias = noticias.concat(noticiaJornal)
+      noticias = noticias.concat(noticiasNumero(noticiaJornal,4))
 
     }
     if(urls[i].includes('folha'))   {
@@ -70,7 +66,7 @@ const scrapeLogic = async (res) => {
           }) => ({jornal: "Folha de SP", noticia: textContent}))
           return list
         })
-       noticias = noticias.concat(noticiaJornal)
+       noticias = noticias.concat(noticiasNumero(noticiaJornal,4))
     }
     if(urls[i].includes('valor'))   {
       const noticiaJornal = await page.evaluate(()=>{
@@ -79,7 +75,7 @@ const scrapeLogic = async (res) => {
         const list =  valorNews.map(({textContent}) => ({jornal: 'Valor', noticia: textContent}))
       return list 
     })
-       noticias = noticias.concat(noticiaJornal)
+       noticias = noticias.concat(noticiasNumero(noticiaJornal,4))
     }
       }
 
