@@ -85,7 +85,7 @@ const scrapeLogic = async (res) => {
 
   res.set('Access-Control-Allow-Origin', '*');
 
-  if (req.method === 'OPTIONS') {
+  if (res.req.method === 'OPTIONS') {
     // Send response to OPTIONS requests
     res.set('Access-Control-Allow-Methods', 'GET');
     res.set('Access-Control-Allow-Headers', 'Content-Type');
