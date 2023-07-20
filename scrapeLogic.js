@@ -46,7 +46,7 @@ const scrapeLogic = async (res) => {
         request.abort() 
       }
     }); 
-    await page.goto(urls, { waitUntil: 'networkidle2' });
+    await page.goto(url, { waitUntil: 'networkidle2' });
     if(url.includes('estadao')) { 
       const noticiaJornal = await page.evaluate( () =>{
       const nodeList = document.getElementsByClassName('headline')
