@@ -8,7 +8,7 @@ const noticiasNumero = (news ,number= 8) => {
 
 
 const scrapeLogic = async (res) => {
-  const url = res.req.query.url
+  //const url = res.req.query.url
   // if (!res.req.query.url) {
   //   res.json({message: "endereco mal formatado: ?url=endereco"}).status(400).send()
   //   return 
