@@ -34,20 +34,20 @@ const scrapeLogic = async (res) => {
     for (let i = 0; i< urls.length; i ++) 
       {
    
-
+    let url = urls[i]
     const page = await browser.newPage();
     await page.setRequestInterception(true);
 
     page.on('request', (request) => {
 
-      if(request.url().startsWith(urls[i])) {
+      if(request.url().startsWith(url)) {
         request.continue()
       } else {
         request.abort() 
       }
     }); 
-    await page.goto(urls[i], { waitUntil: 'networkidle2' });
-    if(urls[i].includes('estadao')) { 
+    await page.goto(urls, { waitUntil: 'networkidle2' });
+    if(url.includes('estadao')) { 
       const noticiaJornal = await page.evaluate( () =>{
       const nodeList = document.getElementsByClassName('headline')
       const estadaoNews = [...nodeList]
@@ -57,7 +57,7 @@ const scrapeLogic = async (res) => {
       noticias = noticias.concat(noticiasNumero(noticiaJornal,4))
 
     }
-    if(urls[i].includes('folha'))   {
+    if(url.includes('folha'))   {
       const noticiaJornal = await page.evaluate(() => {
           const nodeList = document.getElementsByClassName("c-headline__title")
           const folhaNews = [...nodeList]
@@ -68,7 +68,7 @@ const scrapeLogic = async (res) => {
         })
        noticias = noticias.concat(noticiasNumero(noticiaJornal,4))
     }
-    if(urls[i].includes('valor'))   {
+    if(url.includes('valor'))   {
       const noticiaJornal = await page.evaluate(()=>{
         const nodeList = document.getElementsByClassName('feed-post-link gui-color-primary')
         const valorNews = [...nodeList]
